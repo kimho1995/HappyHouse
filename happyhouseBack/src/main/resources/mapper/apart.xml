@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- select distinct(dong), round(avg(replace(deal_amount, ',', ''))) avgDeal
+from aptdeal
+where gungu_code = '11110' and deal_year = '2019'
+group by dong
+order by avgDeal desc
+limit 0, 5; -->
+<mapper namespace="com.ssafy.house.dao.ApartMapper">
+
+	<select id = "listAptAvgDesc" parameterType="Map" resultType="AptAvgDto">
+		select distinct(dong), round(avg(replace(deal_amount, ',', ''))) dealAmountAvg
+		from aptdeal
+		where gungu_code = #{gugunCode} and deal_year = #{dealYear}
+		group by dong
+		order by dealAmountAvg desc
+		limit 0, 5
+	</select>
+	
+	<select id = "listAptAvgAsc" parameterType="Map" resultType="AptAvgDto">
+		select distinct(dong), round(avg(replace(deal_amount, ',', ''))) dealAmountAvg
+		from aptdeal
+		where gungu_code = #{gugunCode} and deal_year = #{dealYear}
+		group by dong
+		order by dealAmountAvg asc
+		limit 0, 5
+	</select>
+	
+	<resultMap type="CityDto" id="CityList">
+		<result property="cityCode" column="cityCode"/>
+		<result property="city" column="city"/>
+		<result property="guCode" column="gugun_code"/>
+		<result property="gu" column="gugun_name"/>
+		<result property="dongCode" column="dongcode"/>
+		<result property="dong" column="dong"/>
+	</resultMap>
+	<select id = "listSido" resultMap="CityList">
+		select sido_code cityCode, sido_name city
+		from sidocode
+	</select>
+	<select id="listGu" parameterType="String" resultMap="CityList">
+		select gugun_code, gugun_name
+		from guguncode
+		where gugun_code like concat(#{cityCode}, '%')
+	</select>
+	
+	<select id="listDong" parameterType="String" resultMap="CityList">
+		select dong_code dongcode, dong
+		from dongcode
+		where dong_code like concat(#{guCode}, '%')
+	</select>
+	
+	<resultMap type="ApartDto" id="ApartList">
+		<result property="dong" column="dong"/>
+		<result property="AptName" column="AptName"/>
+		<result property="code" column="code"/>
+		<result property="buildYear" column="buildYear"/>
+		<result property="lat" column="lat"/>
+		<result property="lng" column="lng"/>
+		<result property="dealAmount" column="dealAmount"/>
+		<result property="dealYear" column="dealYear"/>
+		<result property="dealMonth" column="dealMonth"/>
+		<result property="dealDay" column="dealDay"/>
+		<result property="floor" column="floor"/>
+		<result property="jibun" column="jibun"/>
+	</resultMap>
+	
+	<select id="apartInfo" parameterType="ApartDto" resultMap="ApartList">
+		select dong, AptName, code, buildYear, lat, lng
+		from houseinfo
+		where dong = #{dong} and code= #{code}
+	</select>
+	
+	<select id="apartDetail" parameterType="SearchCondition2" resultMap="ApartList">
+		select dong, AptName, code, dealAmount, buildYear, dealYear, dealMonth, dealDay, floor
+		from housedeal
+		where dong = #{dong} and AptName= #{AptName}
+		<if test="word != 'none'">
+			<if test="key != 'none'">
+				and ${key} = #{word}
+			</if>
+		</if>
+	</select>
+	
+	<!--  <select id="apartList" parameterType="ApartDto" resultMap="ApartList">
+		select houseinfo.AptName,housedeal.dealAmount,housedeal.jibun,housedeal.code,housedeal.dong, houseinfo.lat,houseinfo.lng
+		from housedeal, houseinfo
+		where housedeal.AptName = houseinfo.AptName and housedeal.code = houseinfo.code and
+			housedeal.dong = #{dong} or housedeal.AptName LIKE concat('%', #{dong}, '%')
+			and housedeal.code = left((SELECT gugun_code 
+			from guguncode
+			where gugun_name=#{gu} and gugun_code LIKE concat(1, '%')),5)
+	</select> -->
+	
+	<select id="apartList" parameterType="String" resultMap="ApartList">
+		select  housedeal.dong as dong, housedeal.AptName as AptName, dealAmount, housedeal.buildYear as buildYear, dealYear, dealMonth, dealDay, lat, lng
+		from housedeal, houseinfo
+		where housedeal.AptName = houseinfo.AptName and
+		housedeal.AptName like concat('%', #{AptName}, '%')
+	</select>
+	
+</mapper>

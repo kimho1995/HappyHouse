@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace="com.ssafy.house.dao.BoardMapper">
+<!--  <resultMap type="com.ssafy.edu.vue.dto.EmployeeDto" id="emps">
+       <result column="publish_date" property="publishDate"/>
+ </resultMap> -->
+ <select id="findAllBoard" resultType="com.ssafy.house.dto.BoardDto">
+     select bid, userid, title, created_at, updated_at
+     from board
+ </select>
+ <select id="detailBoard" parameterType="int" resultType="com.ssafy.house.dto.BoardDto">
+ 	select bid, userid, title, content, created_at, updated_at
+ 	from board
+ 	where bid = #{bid} order by bid
+ </select>
+ <select id="searchBoard" parameterType="com.ssafy.house.dto.BoardDto" resultType="com.ssafy.house.dto.BoardDto">
+ 	select bid, userid, title, created_at, updated_at
+ 	from board
+ 	<if test="searchtype == 'title'">
+ 		where title like concat('%',#{searchname},'%')
+ 	</if>
+ 	<if test="searchtype == 'content'">
+ 		where content like concat('%',#{searchname},'%')
+ 	</if>
+ </select>
+ <insert id="addBoard" parameterType="com.ssafy.house.dto.BoardDto" >
+    INSERT INTO board	     
+	(userid,title,content)
+	VALUES(
+    #{userid},#{title},#{content}
+	)
+ </insert>
+ <update id="updateBoard" parameterType="com.ssafy.house.dto.BoardDto">
+    UPDATE board SET
+    title=#{title}, content=#{content}
+	WHERE bid=#{bid}                
+ </update>
+ <delete id="deleteBoard" parameterType="int">
+    DELETE FROM board WHERE bid=#{bid}    
+ </delete>
+ 
+ <!-- 수정중 페이징처리 -->
+ 
+ 	<select id="listBoard" parameterType="SearchCondition" resultType="com.ssafy.house.dto.BoardDto">
+		select bid, userid, title, created_at
+		from board
+		<if test="word != null and word != ''">
+			<if test="key == 'title'">
+				where title like concat('%', #{word}, '%')
+			</if>
+			<if test="key == 'content'">
+				where content like concat('%',#{word},'%')
+			</if>
+		</if>
+		order by bid desc
+		limit #{start}, #{spp}
+	</select>
+	
+	<select id="getTotalCount" parameterType="SearchCondition" resultType="int">
+		select count(bid)
+		from board
+		<if test="word != null and word != ''">
+			<if test="key == 'title'">
+				where title like concat('%', #{word}, '%')
+			</if>
+			<if test="key == 'content'">
+				where content like concat('%',#{word},'%')
+			</if>
+		</if>
+	</select>
+ 
+ 
+ <!--  `bid`
+  `userid`
+  `title`
+  `content`
+  `created_at`
+  `updated_at`-->
+</mapper>

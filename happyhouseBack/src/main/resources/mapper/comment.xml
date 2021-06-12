@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace="com.ssafy.house.dao.CommentDaoImpl">
+
+ <insert id="addComment" parameterType="CommentDto" >
+    INSERT INTO comment(bid, userid, content) 
+    VALUES(#{bid},#{userid},#{content});
+ </insert>
+ 
+ <update id="modComment" parameterType="CommentDto">
+    UPDATE comment 
+       SET content=#{content}
+	WHERE cid=#{cid}                
+ </update>
+ 
+ <delete id="deleteComment" parameterType="int">
+    DELETE FROM comment 
+     WHERE cid=#{cid}    
+ </delete>
+ 
+ 
+ <select id="commentList" parameterType="int" resultType="CommentDto">
+	SELECT cid, userid, content , created_at, updated_at
+	  FROM comment
+	 WHERE bid = #{bid}
+</select>
+
+<select id="getCommentsCnt" parameterType="int" resultType="CommentDto">
+	SELECT cnt(cid)
+	  FROM comment
+	 WHERE bid = #{bid}
+</select>
+	
+</mapper>

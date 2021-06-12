@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+
+       Copyright 2015-2016 the original author or authors.
+
+       Licensed under the Apache License, Version 2.0 (the "License");
+       you may not use this file except in compliance with the License.
+       You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+       Unless required by applicable law or agreed to in writing, software
+       distributed under the License is distributed on an "AS IS" BASIS,
+       WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+       See the License for the specific language governing permissions and
+       limitations under the License.
+
+-->
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+     <typeAliases> 
+         <typeAlias type="com.ssafy.house.dto.CityDto" alias="CityDto"/>
+         <typeAlias type="com.ssafy.house.dto.ApartDto" alias="ApartDto"/>
+         <typeAlias type="com.ssafy.house.dto.MemberDto" alias="MemberDto"/>
+         <typeAlias type="com.ssafy.house.dto.StoreDto" alias="StoreDto"/>
+         <typeAlias type="com.ssafy.house.dto.CategoryDto" alias="CategoryDto"/>
+         <typeAlias type="com.ssafy.house.dto.DealDto" alias="DealDto"/>
+         <typeAlias type="com.ssafy.house.dto.NoticeDto" alias="NoticeDto"/>
+         <typeAlias type="com.ssafy.house.dto.CommentDto" alias="CommentDto"/>
+         <typeAlias type="com.ssafy.house.dto.AptAvgDto" alias="AptAvgDto"/>
+         
+         <typeAlias type="com.ssafy.house.dto.SearchCondition" alias="SearchCondition"/>
+         <typeAlias type="com.ssafy.house.dto.SearchCondition2" alias="SearchCondition2"/>
+    </typeAliases> 
+    <mappers>
+        <mapper resource="mapper/board.xml"/>
+        <mapper resource="mapper/apart.xml"/>
+        <mapper resource="mapper/user.xml"/>
+        <mapper resource="mapper/store.xml"/>
+        <mapper resource="mapper/data.xml"/>
+        <mapper resource="mapper/deal.xml"/>
+        <mapper resource="mapper/notice.xml"/>
+        <mapper resource="mapper/comment.xml"/>
+    </mappers>
+</configuration>

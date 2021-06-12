@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace="com.ssafy.house.dao.StoreDaoImpl">
+ <!-- 
+ <select id="searchByCode" parameterType ="StoreDto" resultType="StoreDto">
+     SELECT store_id storeId, store_name storeName, branch_name branchName, large_category_code largeCategorCode, large_category_name largeCategory, medium_category_code mediumCategoryCode, medium_category_name mediumCategory, small_category_code smallCategoryCode, small_category_name smallCategory, sido_code sidoCode, city sido, gugun_code gugunCode, gugun, dong_code dongCode, dong, address, post_num postNum,len, lat
+       FROM store_view
+        <if test="dongCode != null and gugunCode != null and sidoCode != null">
+        	WHERE dong_code = #{dongCode}
+        </if>
+         <if test="dongCode == null and gugunCode != null and sidoCode != null">
+        	WHERE gugun_code = #{gugunCode}
+        </if>
+         <if test="dongCode == null and gugunCode == null and sidoCode != null">
+        	WHERE sido_code = #{sidoCode}
+        </if>
+   ORDER BY storeId DESC
+      LIMIT #{start}, #{spp}
+ </select>
+ 
+ <select id="getTotalCount" parameterType="StoreDto" resultType="int">
+     SELECT count(store_id) 
+       FROM store_view
+        <if test="dongCode != null and gugunCode != null and sidoCode != null">
+        	WHERE dong_code = #{dongCode}
+        </if>
+         <if test="dongCode == null and gugunCode != null and sidoCode != null">
+        	WHERE gugun_code = #{gugunCode}
+        </if>
+         <if test="dongCode == null and gugunCode == null and sidoCode != null">
+        	WHERE sido_code = #{sidoCode}
+        </if>
+ </select>
+ 
+ 
+ <select id= "findAroundStore" parameterType="Map" resultType="StoreDto">
+     SELECT store_id storeId, store_name storeName, branch_name branchName, large_category_code largeCategorCode, large_category_name largeCategory, medium_category_code mediumCategoryCode, medium_category_name mediumCategory, small_category_code smallCategoryCode, small_category_name smallCategory, sido_code sidoCode, city sido, gugun_code gugunCode, gugun, dong_code dongCode, dong, address, post_num postNum,len, lat
+       FROM store_view
+	  WHERE dong_code = #{dongCode}
+	    AND small_category_code = #{smallCategoryCode};
+ </select>
+ -->
+ 
+ <select id= "findStoreCount" parameterType="Map" resultType="StoreDto">
+ 	select dong, storeCnt
+ 	from baseaddress, (select distinct(dong_code), count(store_id) storeCnt
+		from store
+		where large_category_code = #{category} and gugun_code = #{gugunCode}
+		group by dong_code
+		order by storeCnt desc limit 10) storeA
+ 	where storeA.dong_code = baseaddress.code
+	order by storeCnt desc
+ </select>
+ 
+ <select id= "findGugunStoreCount" parameterType="Map" resultType="int">
+ 	select count(store_id) storeCnt
+ 	from store
+ 	where large_category_code = #{category} and gugun_code = #{gugunCode}
+ </select>
+ 
+ <select id="largeCategory" resultType="CategoryDto">
+ 	select large_category_code, large_category_name
+ 	from largecategorycode
+ </select>
+ 
+</mapper>

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace="com.ssafy.house.dao.UserMapper">
+	<select id="login" parameterType="MemberDto" resultType="MemberDto">
+		select userid, username, password, email, number, address, date_format(created_at, '%y.%m.%d') created_at, rolename
+		from users
+		where userid = #{userid} and password = #{password}
+	</select>
+	
+	<update id="userModify" parameterType="MemberDto">
+		update users
+		set username=#{username}, password = #{password}, email = #{email}, number=#{number}, address = #{address}
+		where userid = #{userid}
+	</update>
+	
+	<!--<select id="searchMember" resultType="MemberDto" parameterType="SearchCondition">
+		select userid, username, password, email, number, address, date_format(created_at, '%y.%m.%d') created_at
+		from users
+		<if test="key!='none'">
+			where ${key} like concat('%', #{word} ,'%')
+		</if>
+		<if test="orderBy!='none'">
+			order by ${orderBy} ${orderByDir}
+		</if>
+		<if test="limit">
+			limit #{offset} , #{countPerPage}
+		</if>
+	</select> -->
+
+	<!-- 검색 조건에 해당하는 데이터 건수를 반환한다. 
+	<select id="getTotalSearchCount" resultType="int"
+		parameterType="SearchCondition">
+		select count(*) from users
+		<if test="key!='none'">
+			where ${key} like concat('%', #{word} ,'%')
+		</if>
+	</select>-->
+	
+	<select id="userInfo" parameterType="String" resultType="MemberDto">
+		select userid, username, password, email, number, address, date_format(created_at, '%y.%m.%d') created_at
+		from users
+		where userid = #{userid}
+	</select>
+	
+	<insert id="userRegister" parameterType="MemberDto">
+		insert into users (userid, username, password, email, number, address)
+		values (#{userid}, #{username}, #{password}, #{email}, #{number}, #{address})
+	</insert>
+	
+	<delete id="userDelete" parameterType="String">
+		delete from users
+		where userid = #{userid}
+	</delete>
+	
+	<select id="findpwd" parameterType="MemberDto" resultType="MemberDto">
+		select userid, username, password, email, number, address
+		from users
+		where userid=#{userid} and username=#{username} and email=#{email}
+	</select>
+	
+	<select id="userList" parameterType="SearchCondition" resultType="MemberDto">
+		select userid, username, password, email, number, address, date_format(created_at, '%y.%m.%d') created_at
+		from users
+		<if test="word != null and word != ''">
+			<if test="key == 'userid'">
+				where userid like concat('%', #{word}, '%')
+			</if>
+			<if test="key == 'address'">
+				where address like concat('%',#{word},'%')
+			</if>
+		</if>
+		order by created_at desc
+		limit #{start}, #{spp}
+	</select>
+	
+	<select id="getTotalCount" parameterType="SearchCondition" resultType="int">
+		select count(userid)
+		from users
+		<if test="word != null and word != ''">
+			<if test="key == 'userid'">
+				where userid like concat('%', #{word}, '%')
+			</if>
+			<if test="key == 'address'">
+				where address like concat('%',#{word},'%')
+			</if>
+		</if>
+	</select>
+	
+</mapper>
+
+
+<!-- 
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `userid` 
+  `username`
+  `password`
+  `email` 
+  `number` 
+  `address`
+  `created_at` 
+  `updated_at` 
+
+ -->

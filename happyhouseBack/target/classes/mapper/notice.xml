@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace="com.ssafy.house.dao.NoticeMapper">
+<!--  <resultMap type="com.ssafy.edu.vue.dto.EmployeeDto" id="emps">
+       <result column="publish_date" property="publishDate"/>
+ </resultMap> -->
+ <select id="findAllNotice" resultType="NoticeDto">
+     select nid, userid, title, created_at, updated_at
+     from notice
+ </select>
+ <select id="detailNotice" parameterType="int" resultType="NoticeDto">
+ 	select nid, userid, title, content, created_at, updated_at
+ 	from notice
+ 	where nid = #{bid} order by nid
+ </select>
+ <select id="searchNotice" parameterType="NoticeDto" resultType="NoticeDto">
+ 	select nid, userid, title, created_at, updated_at
+ 	from notice
+ 	<if test="searchtype == 'title'">
+ 		where title like concat('%',#{searchname},'%')
+ 	</if>
+ 	<if test="searchtype == 'content'">
+ 		where content like concat('%',#{searchname},'%')
+ 	</if>
+ </select>
+ <insert id="addNotice" parameterType="NoticeDto" >
+    INSERT INTO notice	     
+	(userid,title,content)
+	VALUES(
+    #{userid},#{title},#{content}
+	)
+ </insert>
+ <update id="updateNotice" parameterType="NoticeDto">
+    UPDATE notice SET
+    title=#{title}, content=#{content}
+	WHERE nid=#{nid}                
+ </update>
+ <delete id="deleteNotice" parameterType="int">
+    DELETE FROM notice WHERE nid=#{nid}    
+ </delete>
+ 
+ <!-- 수정중 페이징처리 -->
+ 
+ 	<select id="listNotice" parameterType="SearchCondition" resultType="NoticeDto">
+		select nid, userid, title, created_at
+		from notice
+		<if test="word != null and word != ''">
+			<if test="key == 'title'">
+				where title like concat('%', #{word}, '%')
+			</if>
+			<if test="key == 'content'">
+				where content like concat('%',#{word},'%')
+			</if>
+		</if>
+		order by nid desc
+		limit #{start}, #{spp}
+	</select>
+	
+	<select id="getTotalCount" parameterType="SearchCondition" resultType="int">
+		select count(nid)
+		from notice
+		<if test="word != null and word != ''">
+			<if test="key == 'title'">
+				where title like concat('%', #{word}, '%')
+			</if>
+			<if test="key == 'content'">
+				where content like concat('%',#{word},'%')
+			</if>
+		</if>
+	</select>
+ 
+ 
+ <!--  `nid`
+  `userid`
+  `title`
+  `content`
+  `created_at`
+  `updated_at`-->
+</mapper>
